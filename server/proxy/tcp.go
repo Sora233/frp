@@ -30,8 +30,12 @@ type TCPProxy struct {
 
 func (pxy *TCPProxy) Run() (remoteAddr string, err error) {
 	xl := pxy.xl
+	var bindAddr = pxy.serverCfg.ProxyBindAddr
+	if pxy.cfg.RemoteAddr != "" {
+		bindAddr = pxy.cfg.RemoteAddr
+	}
 	if pxy.cfg.Group != "" {
-		l, realPort, errRet := pxy.rc.TCPGroupCtl.Listen(pxy.name, pxy.cfg.Group, pxy.cfg.GroupKey, pxy.serverCfg.ProxyBindAddr, pxy.cfg.RemotePort)
+		l, realPort, errRet := pxy.rc.TCPGroupCtl.Listen(pxy.name, pxy.cfg.Group, pxy.cfg.GroupKey, bindAddr, pxy.cfg.RemotePort)
 		if errRet != nil {
 			err = errRet
 			return
@@ -43,7 +47,7 @@ func (pxy *TCPProxy) Run() (remoteAddr string, err error) {
 		}()
 		pxy.realPort = realPort
 		pxy.listeners = append(pxy.listeners, l)
-		xl.Info("tcp proxy listen port [%d] in group [%s]", pxy.cfg.RemotePort, pxy.cfg.Group)
+		xl.Info("tcp proxy listen [%v:%d] in group [%s]", pxy.cfg.RemoteAddr, pxy.cfg.RemotePort, pxy.cfg.Group)
 	} else {
 		pxy.realPort, err = pxy.rc.TCPPortManager.Acquire(pxy.name, pxy.cfg.RemotePort)
 		if err != nil {
@@ -54,13 +58,13 @@ func (pxy *TCPProxy) Run() (remoteAddr string, err error) {
 				pxy.rc.TCPPortManager.Release(pxy.realPort)
 			}
 		}()
-		listener, errRet := net.Listen("tcp", fmt.Sprintf("%s:%d", pxy.serverCfg.ProxyBindAddr, pxy.realPort))
+		listener, errRet := net.Listen("tcp", fmt.Sprintf("%s:%d", bindAddr, pxy.realPort))
 		if errRet != nil {
 			err = errRet
 			return
 		}
 		pxy.listeners = append(pxy.listeners, listener)
-		xl.Info("tcp proxy listen port [%d]", pxy.cfg.RemotePort)
+		xl.Info("tcp proxy listen [%v:%d]", bindAddr, pxy.cfg.RemotePort)
 	}
 
 	pxy.cfg.RemotePort = pxy.realPort

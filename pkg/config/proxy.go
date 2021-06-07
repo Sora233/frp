@@ -173,7 +173,8 @@ type HTTPSProxyConf struct {
 // TCP
 type TCPProxyConf struct {
 	BaseProxyConf `ini:",extends"`
-	RemotePort    int `ini:"remote_port" json:"remote_port"`
+	RemotePort    int    `ini:"remote_port" json:"remote_port"`
+	RemoteAddr    string `ini:"remote_addr" json:"remote_addr"`
 }
 
 // TCPMux
@@ -204,7 +205,8 @@ type XTCPProxyConf struct {
 type UDPProxyConf struct {
 	BaseProxyConf `ini:",extends"`
 
-	RemotePort int `ini:"remote_port" json:"remote_port"`
+	RemotePort int    `ini:"remote_port" json:"remote_port"`
+	RemoteAddr string `ini:"remote_addr" json:"remote_addr"`
 }
 
 // SUDP
@@ -517,6 +519,9 @@ func (cfg *TCPProxyConf) Compare(cmp ProxyConf) bool {
 	if cfg.RemotePort != cmpConf.RemotePort {
 		return false
 	}
+	if cfg.RemoteAddr != cmpConf.RemoteAddr {
+		return false
+	}
 
 	return true
 }
@@ -526,6 +531,7 @@ func (cfg *TCPProxyConf) UnmarshalFromMsg(pMsg *msg.NewProxy) {
 
 	// Add custom logic unmarshal if exists
 	cfg.RemotePort = pMsg.RemotePort
+	cfg.RemoteAddr = pMsg.RemoteAddr
 }
 
 func (cfg *TCPProxyConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) error {
@@ -544,6 +550,7 @@ func (cfg *TCPProxyConf) MarshalToMsg(pMsg *msg.NewProxy) {
 
 	// Add custom logic marshal if exists
 	pMsg.RemotePort = cfg.RemotePort
+	pMsg.RemoteAddr = cfg.RemoteAddr
 }
 
 func (cfg *TCPProxyConf) CheckForCli() (err error) {
@@ -661,7 +668,9 @@ func (cfg *UDPProxyConf) Compare(cmp ProxyConf) bool {
 	if cfg.RemotePort != cmpConf.RemotePort {
 		return false
 	}
-
+	if cfg.RemoteAddr != cmpConf.RemoteAddr {
+		return false
+	}
 	return true
 }
 
@@ -681,6 +690,7 @@ func (cfg *UDPProxyConf) UnmarshalFromMsg(pMsg *msg.NewProxy) {
 
 	// Add custom logic unmarshal if exists
 	cfg.RemotePort = pMsg.RemotePort
+	cfg.RemoteAddr = pMsg.RemoteAddr
 }
 
 func (cfg *UDPProxyConf) MarshalToMsg(pMsg *msg.NewProxy) {
@@ -688,6 +698,7 @@ func (cfg *UDPProxyConf) MarshalToMsg(pMsg *msg.NewProxy) {
 
 	// Add custom logic marshal if exists
 	pMsg.RemotePort = cfg.RemotePort
+	pMsg.RemoteAddr = cfg.RemoteAddr
 }
 
 func (cfg *UDPProxyConf) CheckForCli() (err error) {

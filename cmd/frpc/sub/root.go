@@ -56,6 +56,7 @@ var (
 	localIP           string
 	localPort         int
 	remotePort        int
+	remoteAddr        string
 	useEncryption     bool
 	useCompression    bool
 	customDomains     string

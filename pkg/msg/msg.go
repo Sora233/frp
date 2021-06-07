@@ -94,7 +94,8 @@ type NewProxy struct {
 	Metas          map[string]string `json:"metas"`
 
 	// tcp and udp only
-	RemotePort int `json:"remote_port"`
+	RemotePort int    `json:"remote_port"`
+	RemoteAddr string `json:"remote_addr"`
 
 	// http and https only
 	CustomDomains     []string          `json:"custom_domains"`

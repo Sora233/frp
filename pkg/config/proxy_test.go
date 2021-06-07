@@ -62,6 +62,7 @@ func Test_Proxy_UnmarshalFromIni(t *testing.T) {
 				use_encryption
 				use_compression
 				remote_port = 6009
+				remote_addr = localhost
 				group = test_group
 				group_key = 123456
 				health_check_type = tcp
@@ -96,6 +97,7 @@ func Test_Proxy_UnmarshalFromIni(t *testing.T) {
 					},
 				},
 				RemotePort: 6009,
+				RemoteAddr: "localhost",
 			},
 		},
 		{
@@ -106,6 +108,7 @@ func Test_Proxy_UnmarshalFromIni(t *testing.T) {
 				local_ip = 127.0.0.9
 				local_port = 29
 				remote_port = 9
+				remote_addr = 0.0.0.0
 			`),
 			expected: &TCPProxyConf{
 				BaseProxyConf: BaseProxyConf{
@@ -117,6 +120,7 @@ func Test_Proxy_UnmarshalFromIni(t *testing.T) {
 					},
 				},
 				RemotePort: 9,
+				RemoteAddr: "0.0.0.0",
 			},
 		},
 		{

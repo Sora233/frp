@@ -78,6 +78,7 @@ var (
 		use_encryption
 		use_compression
 		remote_port = 6009
+		remote_addr = localhost
 		group = test_group
 		group_key = 123456
 		health_check_type = tcp
@@ -329,6 +330,7 @@ func Test_LoadClientBasicConf(t *testing.T) {
 				},
 			},
 			RemotePort: 6009,
+			RemoteAddr: "localhost",
 		},
 		testUser + ".ssh_random": &TCPProxyConf{
 			BaseProxyConf: BaseProxyConf{
